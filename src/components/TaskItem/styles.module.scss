@@ -1,0 +1,24 @@
+.content {
+  display: flex;
+  gap: 5px;
+  border-bottom: 1px solid;
+
+  align-items: center;
+  height: 35px;
+  span {
+    width: 100%;
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+  }
+  svg {
+    cursor: pointer;
+  }
+
+  .done {
+    text-decoration: line-through;
+    text-decoration-color: #000;
+  }
+}
