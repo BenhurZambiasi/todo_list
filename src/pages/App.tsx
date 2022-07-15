@@ -74,6 +74,8 @@ function App() {
           handleCacelarEdicao={handleCacelarEdicao}
           handleClickAction={handleClickAction}
           inputValue={name}
+          error={error}
+          handleFocus={() => setError("")}
         />
         <TodoList openEdit={openEdit} todoList={state} isEditing={edit} />
         <section className={styles.legenda}>

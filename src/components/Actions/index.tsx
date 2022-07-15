@@ -3,7 +3,9 @@ import styles from "./styles.module.scss";
 
 interface IActionsProps {
   onChangeName: (value: string) => void;
+  handleFocus: () => void;
   inputValue: string;
+  error: string;
   edit: boolean;
   handleCacelarEdicao: () => void;
   handleClickAction: () => void;
@@ -12,17 +14,23 @@ const Actions: React.FC<IActionsProps> = ({
   onChangeName,
   inputValue,
   edit,
+  error,
   handleCacelarEdicao,
   handleClickAction,
+  handleFocus,
 }) => {
   return (
     <div className={styles.actions}>
-      <input
-        type="text"
-        onChange={({ target }) => onChangeName(String(target.value))}
-        value={inputValue}
-        placeholder="Digite a descrição"
-      />
+      <div className={styles.input}>
+        <input
+          type="text"
+          placeholder="Digite a descrição"
+          value={inputValue}
+          onFocus={handleFocus}
+          onChange={({ target }) => onChangeName(String(target.value))}
+        />
+        <span>{error}</span>
+      </div>
       <button
         style={{
           backgroundColor: edit ? "var(--blue-900)" : "var(--green-900)",
