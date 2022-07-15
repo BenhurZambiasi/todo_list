@@ -21,13 +21,14 @@ const Actions: React.FC<IActionsProps> = ({
         type="text"
         onChange={({ target }) => onChangeName(String(target.value))}
         value={inputValue}
+        placeholder="Digite a descrição"
       />
       <button
         style={{
           backgroundColor: edit ? "var(--blue-900)" : "var(--green-900)",
         }}
         onClick={handleClickAction}>
-        {edit ? "Editar tarefa" : "Adicinar nova tarefa"}
+        {edit ? "Editar tarefa" : "Adicionar nova tarefa"}
       </button>
       {edit && (
         <button

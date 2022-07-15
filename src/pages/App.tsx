@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { FiPlus, FiTrash, FiEdit } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
 import Actions from "../components/Actions";
-import TaskItem from "../components/TaskItem";
 import TodoList from "../components/TodoList";
+import { addTask, deleteTask, editTask, toggleDone } from "../redux/todoSlice";
 import styles from "./App.module.scss";
 
 interface IItemTodoList {
@@ -12,75 +12,56 @@ interface IItemTodoList {
 }
 
 function App() {
-  const [todoList, setTodoList] = useState<IItemTodoList[]>([
-    { name: "Item 1", done: false, id: 1 },
-    { name: "Item 2", done: false, id: 2 },
-    { name: "Item 3", done: false, id: 3 },
-    { name: "Item 4", done: false, id: 4 },
-  ]);
+  const dispatch = useDispatch();
+  const state = useSelector(({ todo }: any) => todo.todo);
+
+  const [name, setName] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [edit, setEdit] = useState<boolean>(false);
   const [taskSelected, setTaskSelected] = useState<IItemTodoList>({
     name: "",
     done: false,
     id: 0,
   });
-  const [name, setName] = useState<string>("");
-  const [edit, setEdit] = useState<boolean>(false);
 
+  //cria uma nota tarefa
   const handelnewTask = () => {
-    let list = [...todoList];
-    let id = todoList[todoList.length - 1]?.id + 1 || 1;
-    list.push({ name: name, done: false, id });
-    setTodoList(list);
-    setName("");
-  };
-
-  const checkDone = (task: IItemTodoList, index: number) => {
-    let list = [...todoList];
-    const findTask = todoList.find(({ id }) => task.id === id);
-    let updatedTask;
-
-    if (findTask) {
-      updatedTask = { ...findTask, done: !findTask.done };
-      list.splice(index, 1, updatedTask);
-      setTodoList(list);
+    if (name) {
+      dispatch(addTask({ name: name }));
+      setName("");
+    } else {
+      setError("Digite uma descrição");
     }
   };
 
+  //ativa o modo edição
   const openEdit = (task: IItemTodoList) => {
     setEdit(true);
     setName(task.name);
-
     setTaskSelected(task);
   };
 
-  const editTask = () => {
-    let list = [...todoList];
-    const findTask = list.find(({ id }) => taskSelected.id === id);
-    let index = list.findIndex(({ id }) => taskSelected.id === id);
-
-    if (findTask) {
-      let updatedTask = { ...findTask, name: name };
-      list.splice(index, 1, updatedTask);
-
-      setTodoList(list);
-      setEdit(false);
-      setName("");
-    }
+  //função para edição da tarefa
+  const handleEditTask = () => {
+    dispatch(
+      editTask({
+        name: name,
+        task: taskSelected,
+      })
+    );
+    setEdit(false);
+    setName("");
   };
 
-  const removeTask = (index: number) => {
-    let list = [...todoList];
-    list.splice(index, 1);
-    setTodoList(list);
-  };
-
+  //cancela o mode edição
   const handleCacelarEdicao = () => {
     setEdit(false);
     setName("");
   };
 
+  //Faz uma validação para quando executar a função para adicionar ou editar tarefa
   const handleClickAction = () => {
-    edit ? editTask() : handelnewTask();
+    edit ? handleEditTask() : handelnewTask();
   };
 
   return (
@@ -94,25 +75,16 @@ function App() {
           handleClickAction={handleClickAction}
           inputValue={name}
         />
-
-        <section>
-          <TodoList
-            checkDone={checkDone}
-            openEdit={openEdit}
-            removeTask={removeTask}
-            todoList={todoList}
-          />
-        </section>
-
-        <section>
-          <p>total de tarefas: {todoList.length}</p>
+        <TodoList openEdit={openEdit} todoList={state} isEditing={edit} />
+        <section className={styles.legenda}>
+          <p>Total de tarefas: {state.length}</p>
           <p>
-            total de tarefas finalizadas:
-            {todoList.filter((task) => task.done).length}
+            Total de tarefas pendentes:&nbsp;
+            {state.filter((task: IItemTodoList) => !task.done).length}
           </p>
           <p>
-            total de tarefas pendentes:
-            {todoList.filter((task) => !task.done).length}
+            Tarefas concluídas:&nbsp;
+            {state.filter((task: IItemTodoList) => task.done).length}
           </p>
         </section>
       </div>

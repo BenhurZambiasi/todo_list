@@ -11,57 +11,60 @@ interface ITaskItem {
 
 interface ITodoListProps {
   todoList: ITaskItem[];
-  isFinished?: boolean;
-  checkDone: (task: ITaskItem, index: number) => void;
+  isEditing: boolean;
   openEdit: (task: ITaskItem) => void;
-  removeTask: (index: number) => void;
 }
 
 const TodoList: React.FC<ITodoListProps> = ({
+  isEditing,
   todoList,
   openEdit,
-  removeTask,
-  checkDone,
 }) => {
   return (
     <div className={styles.container}>
-      <div className={styles.content}>
-        <label>Tarefas Pendentes</label>
-        <ul>
-          {todoList.map((task, index) => {
-            if (!task.done)
-              return (
-                <TaskItem
-                  task={task}
-                  index={index}
-                  isDone={false}
-                  openEdit={openEdit}
-                  removeTask={removeTask}
-                  checkDone={checkDone}
-                />
-              );
-          })}
-        </ul>
-      </div>
-      <div className={styles.divider} />
+      {todoList.length == 0 ? (
+        <h3> Nenhuma tarefa adicionada</h3>
+      ) : (
+        <>
+          <div className={styles.content}>
+            <label>Tarefas Pendentes</label>
+            <ul>
+              {todoList.map((task, index) => {
+                if (!task.done)
+                  return (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      index={index}
+                      isDone={false}
+                      openEdit={openEdit}
+                      isEditing={isEditing}
+                    />
+                  );
+              })}
+            </ul>
+          </div>
+          <div className={styles.divider} />
 
-      <div className={styles.content}>
-        <label>Tarefas Finalizadas</label>
-        <ul>
-          {todoList.map((task, index) => {
-            if (task.done)
-              return (
-                <TaskItem
-                  task={task}
-                  index={index}
-                  isDone
-                  removeTask={removeTask}
-                  checkDone={checkDone}
-                />
-              );
-          })}
-        </ul>
-      </div>
+          <div className={styles.content}>
+            <label>Tarefas Finalizadas</label>
+            <ul>
+              {todoList.map((task, index) => {
+                if (task.done)
+                  return (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      index={index}
+                      isDone
+                      isEditing={isEditing}
+                    />
+                  );
+              })}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 };
