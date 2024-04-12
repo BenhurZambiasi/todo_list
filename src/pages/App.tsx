@@ -24,6 +24,8 @@ function App() {
     id: 0,
   });
 
+  
+
   //cria uma nota tarefa
   const handelnewTask = () => {
     if (name) {
